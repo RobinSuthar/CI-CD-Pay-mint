@@ -1,23 +1,25 @@
-name: Linting and Formatting on PR
+name: Build on PR
+
 on:
   pull_request:
-    branches: -"master"
+    branches:
+      - master
+
 jobs:
-  Continuous-Intergration:
-    name: Performing linting, Formatting on the application
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the Repository
-        uses: actions/checkout@v3
-
-      - name: Setup pnpm
-        run: npm install -g pnpm
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
 
       - name: Install Dependencies
-        run: pnpm install
+        run: npm install
 
-      - name: Run linting check
-        run: pnpm run lint:check
+      - name: Generate prisma client
+        run: npm run db:generate
 
-      - name: Check formatting
-        run: pnpm run format:check
+      - name: Run Build
+        run: npm run build
